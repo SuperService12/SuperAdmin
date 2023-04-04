@@ -90,7 +90,7 @@ const Sidebar = () => {
                 to="/sellers"
               >
                 <i className="icon fas fa-store-alt"></i>
-                <span className="text">Sellers</span>
+                <span className="text">Service Provider</span>
               </NavLink>
             </li>
 
