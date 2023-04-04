@@ -5,19 +5,23 @@ import Toast from "../components/LoadingError/Toast";
 import { register } from "../Redux/Actions/userActions";
 import Message from "../components/LoadingError/Error";
 import { Link } from "react-router-dom";
+import * as filestack from "filestack-js";
 
 const Register = ({ history }) => {
   window.scrollTo(0, 0);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [image, setImage] = useState("");
   const [password, setPassword] = useState("");
   const [password1, setPassword1] = useState("");
   const [errorP, seterrorP] = useState("");
-  
+
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { error, loading, userInfo } = userLogin;
+
+  const client = filestack.init("Ax90XusSQLu9eIdeZ88ISz");
 
   useEffect(() => {
     if (userInfo) {
@@ -27,8 +31,18 @@ const Register = ({ history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if(password !== password1) return seterrorP(true);
-    dispatch(register(name, email, password));
+    if (password !== password1) return seterrorP(true);
+    dispatch({ type: "USER_LOGIN_REQUEST" });
+    client
+      .upload(image)
+      .then((data) => {
+        dispatch(register({ name, email, password, image: data.url }));
+      })
+      .catch(() => {
+        dispatch({
+          type: "USER_LOGIN_FAIL",
+        });
+      });
   };
   return (
     <>
@@ -39,9 +53,13 @@ const Register = ({ history }) => {
       >
         <div className="card-body">
           {error && <Message variant="alert-danger">{error}</Message>}
-          {errorP && <Message variant="alert-danger">Password Does't Match</Message>}
+          {errorP && (
+            <Message variant="alert-danger">Password Does't Match</Message>
+          )}
           {loading && <Loading />}
-          <h4 className="card-title mb-4 text-center">Sign Up as Professional</h4>
+          <h4 className="card-title mb-4 text-center">
+            Sign Up as Professional
+          </h4>
           <form onSubmit={submitHandler}>
             <div className="mb-3">
               <input
@@ -79,13 +97,30 @@ const Register = ({ history }) => {
                 onChange={(e) => setPassword1(e.target.value)}
               />
             </div>
+            <div className="mb-3">
+              <label className="form-label">Upload Certificate</label>
+              <input
+                className="form-control"
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+                required
+              />
+            </div>
             <div className="mb-4">
               <button type="submit" className="btn btn-primary w-100">
                 Register
               </button>
             </div>
             <p className="text-center">
-              <Link to={"/login"} style={{ fontSize: ".9rem", color: "#7a7a7a", textDecoration: "none", textAlign: "center" }}>
+              <Link
+                to={"/login"}
+                style={{
+                  fontSize: ".9rem",
+                  color: "#7a7a7a",
+                  textDecoration: "none",
+                  textAlign: "center",
+                }}
+              >
                 I Have Account <strong>Login</strong>
               </Link>
             </p>
@@ -97,35 +132,3 @@ const Register = ({ history }) => {
 };
 
 export default Register;
-
-          // <form onSubmit={submitHandler}>
-          //   <div className="mb-3">
-          //     <input
-          //       className="form-control"
-          //       placeholder="Email"
-          //       type="email"
-          //       value={email}
-          //       onChange={(e) => setEmail(e.target.value)}
-          //     />
-          //   </div>
-          //   <div className="mb-3">
-          //     <input
-          //       className="form-control"
-          //       placeholder="Password"
-          //       type="password"
-          //       value={password}
-          //       onChange={(e) => setPassword(e.target.value)}
-          //     />
-          //   </div>
-
-          //   <div className="mb-4">
-          //     <button type="submit" className="btn btn-primary w-100">
-          //       Login
-          //     </button>
-          //   </div>
-          //   <p className="text-center">
-          //     <Link to={"/register"} style={{fontSize:".9rem", color: "#7a7a7a", textDecoration: "none", textAlign: "center"}}>
-          //       CREATE ACCOUNT <strong>REGISTER</strong>
-          //     </Link>
-          //   </p>
-          // </form>
