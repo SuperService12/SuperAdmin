@@ -8,7 +8,7 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGOUT,
 } from "../Constants/UserContants";
-import SuperServer from './../../api/SuperServer'
+import SuperServer from "./../../api/SuperServer";
 import { toast } from "react-toastify";
 
 // LOGIN
@@ -60,7 +60,7 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 // REGISTER
-export const register = (name, email, password) => async (dispatch) => {
+export const register = ({name, email, password, image}) => async (dispatch) => {
   const ToastObjects = {
     pauseOnFocusLoss: false,
     draggable: false,
@@ -78,7 +78,7 @@ export const register = (name, email, password) => async (dispatch) => {
 
     const { data } = await SuperServer.post(
       `/api/users/pro`,
-      { name, email, password },
+      { name, email, password, image },
       config
     );
 
