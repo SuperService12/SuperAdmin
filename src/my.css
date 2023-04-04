@@ -1,3 +1,19 @@
 .w-10{
     width: 10%!important;
 }
+.content-main{
+    position: relative;
+}
+.d-n{
+    display: none;
+}
+.vis{
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    height: 80vh;
+    width: 80vw;
+}
